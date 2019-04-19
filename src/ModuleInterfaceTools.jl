@@ -291,9 +291,11 @@ function _api_reexport(curmod, modules)
         mod = m_eval(curmod, nam)
         if has_api(mod)
             api = get_api(curmod, mod)
-            m_eval(curmod, Expr( :export, getfield(api, :modules)...))
-            m_eval(curmod, Expr( :export, getfield(api, :public)...))
-            m_eval(curmod, Expr( :export, getfield(api, :public!)...))
+            l1, l2, l3 = getfield(api, :modules), getfield(api, :public), getfield(api, :public!)
+            if !(isempty(l1) && isempty(l2) && isempty(l3))
+                println("Reexport: api = $api:$l1,$l2,$l3")
+                m_eval(curmod, Expr( :export, l1..., l2..., l3... ))
+            end
         end
     end
     nothing
